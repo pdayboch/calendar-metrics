@@ -1,10 +1,19 @@
+<h1> Cisco Meraki Mini Labs </h1>
+<form action="/logout" method="POST">
+  <input type="SUBMIT" value="Logout">
+</form>
 
-<p>
-The current calendars are: </p>
+<em style="color: green; font-size: 2em;">
+    The current calendars are: <br>
+</em>
 
-<p> <em style="color: green; font-size: 1em;">
-  <% cals.each do |t| %>
-  <%= t %> <br>
+<em style="color: green; font-size: 1em;">
+
+  <% i=1 %>
+  <% cals.each do |name, calendar| %>
+  <%="#{i}: #{calendar.name} and ID: #{calendar.ident}" %> <br>
+  <% i+=1 %>
   <% end %>
 </em>
-</p>
+
+<%= pie_chart(data) %>
