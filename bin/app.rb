@@ -10,18 +10,18 @@ set :static, true
 set :public_folder, "static"
 set :views, "views"
 
+
 get '/' do
-  thing = Build.new()
-  thing.setup()
-  calendars = thing.calendars
-  data = {"Philip" => 10, "Matthew" => 5, "Greg" => 2}
-  erb :welcome_form, :locals => {'cals' => calendars, 'data' => data}
+  api = Build.new()
+  calendars = api.calendars
+	erb :welcome_form, :locals => {'cals' => calendars}
 end
 
 get '/piechart' do
   data = {"Philip" => 5, "Matthew" => 15, "Greg" => 2}
   erb :chart, :locals => {'data' => data}
 end
+
 
 get '/geochart' do
   data = {"United States" => 5, "Italy" => 15, "France" => 2}

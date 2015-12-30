@@ -1,4 +1,5 @@
 require 'rake/testtask'
+require './bin/app.rb'
 
 Rake::TestTask.new do |t|
 	t.libs << "tests"

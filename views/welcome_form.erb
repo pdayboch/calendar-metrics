@@ -1,6 +1,6 @@
 <h1> Cisco Meraki Mini Labs </h1>
-<form action="/logout" method="POST">
-  <input type="SUBMIT" value="Logout">
+<form action="/refresh" method="POST">
+  <input type="SUBMIT" value="Refresh Data">
 </form>
 
 <em style="color: green; font-size: 2em;">
@@ -9,11 +9,13 @@
 
 <em style="color: green; font-size: 1em;">
 
-  <% i=1 %>
-  <% cals.each do |name, calendar| %>
-  <%="#{i}: #{calendar.name} and ID: #{calendar.ident}" %> <br>
+  <% i=1
+  calData = Hash.new %>
+  <% cals.each do |name, calendar|
+    calData["#{name} (#{calendar.events.count} events)"] = calendar.events.count%>
+  <%="#{i}: #{calendar.name}" %> <br>
+  <%="Events: #{calendar.events.count}" %> <br>
   <% i+=1 %>
   <% end %>
 </em>
-
-<%= pie_chart(data) %>
+<%= pie_chart(calData) %>

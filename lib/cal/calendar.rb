@@ -7,6 +7,7 @@ require './lib/cal/event.rb'
     @name = commonName
     @events = options[:events]
     @earliest = options[:startTime]
+    @updated = Date.new
   end
 
   # Obtain this calendar's events.

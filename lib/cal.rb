@@ -5,8 +5,7 @@ require 'csv'
 class Build
   attr_accessor :calendars
 
-  #CALS_WANTED = ["Cisco Meraki Mini Lab 3","Cisco Meraki Mini Lab 2","Cisco Meraki Mini Lab 1"]
-  CALS_WANTED = ["Cisco Meraki Mini Lab 3"]
+  CALS_WANTED = ["Cisco Meraki Mini Lab 1","Cisco Meraki Mini Lab 2","Cisco Meraki Mini Lab 3"]
   START_TIME = Time.new(2014, 12, 1)
 
   # Obtain a list of calendars within this Google account.
@@ -14,7 +13,10 @@ class Build
     entries = apiEngine.client.execute(:api_method => apiEngine.api.calendar_list.list)
     @calendars = Hash.new
     entries.data.items.each do |calendar|
-      @calendars["#{calendar.summary.chomp}"] = Calendar.new(calendar.id, calendar.summary, :startTime => START_TIME)
+      # Check if this is a minilab calendar
+      if CALS_WANTED.include? calendar.summary.chomp
+        @calendars["#{calendar.summary.chomp}"] = Calendar.new(calendar.id, calendar.summary, :startTime => START_TIME)
+      end
     end
     @calendars
   end
@@ -45,7 +47,7 @@ class Build
     end
   end
 
-  def setup()
+  def initialize()
     # Setup the API and authenticate
     apiEngine = Engine.new()
 
@@ -53,15 +55,19 @@ class Build
     @calendars = download_calendars(apiEngine)
 
     # Download the events for specific calendars only.
-#    CALS_WANTED.each do |cal_wanted|
-#      @calendars[cal_wanted].download_events(apiEngine)
-#    end
+    CALS_WANTED.each do |cal_wanted|
+      @calendars[cal_wanted].download_events(apiEngine)
+    end
 
-#    buildEventsList(@calendars).each do |event|
-#      puts event
-#    end
+    #    buildEventsList(@calendars).each do |event|
+    #      puts event
+    #    end
   end
+
+
 end
+
+
 
   #events = get_events(CAL_NAME_TO_ID, client, calendar_api)
   #rows = build_events(events)
