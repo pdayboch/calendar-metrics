@@ -5,7 +5,6 @@ require 'csv'
 class Build
   attr_accessor :calendars
 
-  APPLICATION_NAME = 'MiniLab Metrics Event grabber'
   #CALS_WANTED = ["Cisco Meraki Mini Lab 3","Cisco Meraki Mini Lab 2","Cisco Meraki Mini Lab 1"]
   CALS_WANTED = ["Cisco Meraki Mini Lab 3"]
   START_TIME = Time.new(2014, 12, 1)
@@ -48,7 +47,7 @@ class Build
 
   def setup()
     # Setup the API and authenticate
-    apiEngine = Engine.new(APPLICATION_NAME)
+    apiEngine = Engine.new()
 
     # Create an array of Calendar objects for cache.
     @calendars = download_calendars(apiEngine)
