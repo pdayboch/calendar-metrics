@@ -1,74 +1,95 @@
 require "./lib/cal/engine.rb"
 require "./lib/cal/calendar.rb"
-require 'csv'
 
 class Build
-  attr_accessor :calendars
-
-  CALS_WANTED = ["Cisco Meraki Mini Lab 1","Cisco Meraki Mini Lab 2","Cisco Meraki Mini Lab 3"]
-  START_TIME = Time.new(2014, 12, 1)
+  attr_accessor :calendars, :userCount, :months, :creators, :creatorEventCount
 
   # Obtain a list of calendars within this Google account.
+  private
   def download_calendars(apiEngine)
     entries = apiEngine.client.execute(:api_method => apiEngine.api.calendar_list.list)
-    @calendars = Hash.new
+    @calendars = []
     entries.data.items.each do |calendar|
-      # Check if this is a minilab calendar
-      if CALS_WANTED.include? calendar.summary.chomp
-        @calendars["#{calendar.summary.chomp}"] = Calendar.new(calendar.id, calendar.summary, :startTime => START_TIME)
-      end
+      name = calendar.summary.chomp
+      @calendars.push(Calendar.new(calendar.id, name,
+      :startTime => @dateMin, :endTime => @dateMax))
     end
-    @calendars
+    @calendars.sort! { |a, b| a.name <=> b.name }
   end
 
-  def buildEventsList(calendars)
-    csv_array = []
-    CALS_WANTED.each do |cal_wanted|
-      cal_events = calendars[cal_wanted].events
-      cal_events.each do |event|
-        temp_array = [cal_wanted, event.creator, event.year, event.month, event.day, event.summary]
-        csv_array.push(temp_array)
+  # populate the creator and month hash for metrics
+  # @param calendars [hash{name[string],calendar[Calendar]}] The full list of calendars
+  # @param sortByCreator [Boolean] true if sorting by creator name, false if sorting by event count
+  # @param asc [Boolean] true if sort acsending, false if sort descending
+  def buildMetrics(calendars, sortByCreator, asc)
+    @creators = Hash.new()
+
+    @months = buildMonthHash
+    calendars.each do |cal|
+      if cal.events
+        #puts "creating list for: #{cal.name}"
+        cal_events = cal.events
+        cal_events.each do |event|
+          # Creator to event count
+          if creators.has_key?(event.creator)
+            creators[event.creator].push(event)
+          else
+            creators[event.creator] = [event]
+          end
+          # Month to event count
+          @months[event.month].push(event)
+        end # each even in a calendar
+      end # each calendar
+    end # calendar has events?
+
+    # sort the creator list
+    @creatorEventCount = []
+    @creators.each do |name, events|
+      @creatorEventCount.push([name, events.count])
+    end
+
+    if sortByCreator== "true"
+      if asc=="true"
+        @creatorEventCount.sort! { |a, b| a[0] <=> b[0] }
+      else
+        @creatorEventCount.sort! { |a, b| b[0] <=> a[0] }
+      end
+    else # sort by event count
+      if asc =="true"
+        @creatorEventCount.sort! { |a, b| a[1] <=> b[1] }
+      else
+        @creatorEventCount.sort! { |a, b| b[1] <=> a[1] }
       end
     end
-    csv_array
   end
 
-  def export_csv(rows)
-    # Verbose
-    puts "Exporting #{csv_array.length} events from #{CAL_NAME_TO_ID.length} calendars."
-
-    # Export events to CSV
-    header = ["Calendar Name", "Creator Email", "Month","Day","Year", "Summary"]
-    CSV.open("Cal_output", "w") do |csv|
-      csv << header
-      rows.each do |row|
-        csv << row
-      end
+  def buildMonthHash()
+    monthsHash = Hash.new
+    I18n.t("date.month_names").each do |month|
+      monthsHash[month] = [] if month
     end
+    monthsHash
   end
 
-  def initialize()
+  def initialize(calsWanted, dateMin, dateMax, sortByCreator = false, asc = false)
+    @calsWanted = calsWanted
+    @dateMin = dateMin
+    @dateMax = dateMax
+
     # Setup the API and authenticate
-    apiEngine = Engine.new()
+    apiEngine = Engine.new
 
     # Create an array of Calendar objects for cache.
     @calendars = download_calendars(apiEngine)
 
     # Download the events for specific calendars only.
-    CALS_WANTED.each do |cal_wanted|
-      @calendars[cal_wanted].download_events(apiEngine)
+    @calendars.each do |cal|
+      if @calsWanted.include?(cal.name)
+        cal.download_events(apiEngine)
+      end
     end
 
-    #    buildEventsList(@calendars).each do |event|
-    #      puts event
-    #    end
+    buildMetrics(@calendars, sortByCreator, asc)
   end
 
-
 end
-
-
-
-  #events = get_events(CAL_NAME_TO_ID, client, calendar_api)
-  #rows = build_events(events)
-  #export_csv(rows)

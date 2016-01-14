@@ -6,7 +6,8 @@ require './lib/cal/event.rb'
     @ident = id
     @name = commonName
     @events = options[:events]
-    @earliest = options[:startTime]
+    @dateMin = options[:startTime]
+    @dateMax = options[:endTime]
     @updated = Date.new
   end
 
@@ -22,7 +23,8 @@ require './lib/cal/event.rb'
         :calendarId => @ident,
         :singleEvents => true,
         :orderBy => 'startTime',
-        :timeMin => @earliest.iso8601 })
+        :timeMin => @dateMin.iso8601,
+        :timeMax => @dateMax.iso8601 })
 
         results.data.items.each do |event|
           if event.start.date_time

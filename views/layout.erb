@@ -3,10 +3,48 @@
   <title>Cisco Meraki Mini Lab</title>
   <script>
     var Chartkick = {"language": "es"};
- </script>
- <script src="http://google.com/jsapi"></script>
- <script src="chartkick.js"></script>
+  </script>
+
+  <script src="http://google.com/jsapi"></script>
+  <script src="chartkick.js"></script>
+
+  <style>
+    html, body {
+      font-family: Verdana,sans-serif;
+          font-size: 15px;
+          line-height: 1.5;
+    }
+    table, th, td {
+      border: 1px solid black;
+      border-color: #ddd;
+      border-collapse: collapse;
+    }
+    table {
+      style="width:25%;
+    }
+    th {
+        text-align: left;
+    }
+    .inlineTable {
+      display: inline-block;
+    }
+    tr:nth-child(odd) {
+      background-color: #ddd;
+    }
+
+    .button-container form,
+.button-container form div {
+    display: inline;
+}
+
+.button-container button {
+    display: inline;
+    vertical-align: middle;
+}
+  </style>
+
 </head>
+
 <body>
 
 <%= yield %>

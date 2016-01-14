@@ -1,21 +1,232 @@
+<img src="meraki-logo.png" alt="Meraki" height="45"width="122">
 <h1> Cisco Meraki Mini Labs </h1>
-<form action="/refresh" method="POST">
-  <input type="SUBMIT" value="Refresh Data">
+Time range:
+<form action ="/sort" method="post">
+  <font size="1">
+  <%="from<input type=\"date\" value=#{startDate} name=\"startDate\">"%>
+  <%="to<input type=\"date\" value=#{endDate} name=\"endDate\">"%>
+  </font>
+  <input type="submit" name="refresh" value="refresh">
 </form>
+<%= "#{startDate.strftime("%B %d, %Y")} - #{endDate.strftime("%B %d, %Y")} "%> <br><br>
 
 <em style="color: green; font-size: 2em;">
-    The current calendars are: <br>
+    The MiniLabs are: <br>
 </em>
-
-<em style="color: green; font-size: 1em;">
-
-  <% i=1
-  calData = Hash.new %>
-  <% cals.each do |name, calendar|
-    calData["#{name} (#{calendar.events.count} events)"] = calendar.events.count%>
-  <%="#{i}: #{calendar.name}" %> <br>
-  <%="Events: #{calendar.events.count}" %> <br>
-  <% i+=1 %>
-  <% end %>
-</em>
+<%  i=1
+    calData = Hash.new
+    calendars.each do |calendar|
+    if calendar.events
+      calData["#{calendar.name} (#{calendar.events.count} events)"] = calendar.events.count %>
+      <%= "#{calendar.name}" %> <br>
+      <b>
+        <%= "Events: #{calendar.events.count}" %> <br>
+      </b>
+      <% i+=1 %>
+    <% end %>
+<%  end %>
+<br>
 <%= pie_chart(calData) %>
+
+<hr>
+
+<center>
+  <em style="color: green; font-size: 2em;">
+      Creator Breakdown: <br><br>
+  </em>
+</center>
+<%  if creatorCount.length < 5 %>
+<center>
+  <table>
+    <tr>
+      <th>
+        <div class="button-container">
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="true" />
+            <input type='hidden' name="sortAsc" value="true" />
+            <input type="submit" value="/\">
+          </form>
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="true" />
+            <input type='hidden' name="sortAsc" value="false" />
+            <input type="submit" value="\/">
+          </form>
+        </div>
+        Creator</th>
+      <th>
+        <div class="button-container">
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="false" />
+            <input type='hidden' name="sortAsc" value="true" />
+            <input type="submit" value="/\">
+          </form>
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="false" />
+            <input type='hidden' name="sortAsc" value="false" />
+            <input type="submit" value="\/">
+          </form>
+        </div>
+        Count</th>
+    </tr>
+      <%  creatorCount.each do |creator| %>
+      <tr>
+      <%= "<td> #{creator[0]} </td>
+            <td> #{creator[1]} </td>" %>
+      </tr>
+      <% end %>
+  </table>
+</center>
+<% elsif creatorCount.length < 11 %>
+<center>
+  <%  if creatorCount.length.odd?
+        colElements = creatorCount.length / 2 + 1
+      else
+        colElements = creatorCount.length / 2
+      end
+    i = 0 %>
+  <table class="inlineTable">
+    <tr>
+      <th>
+        <div class="button-container">
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="true" />
+            <input type='hidden' name="sortAsc" value="true" />
+            <input type="submit" value="/\">
+          </form>
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="true" />
+            <input type='hidden' name="sortAsc" value="false" />
+            <input type="submit" value="\/">
+          </form>
+        </div>
+        Creator</th>
+      <th>
+        <div class="button-container">
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="false" />
+            <input type='hidden' name="sortAsc" value="true" />
+            <input type="submit" value="/\">
+          </form>
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="false" />
+            <input type='hidden' name="sortAsc" value="false" />
+            <input type="submit" value="\/">
+          </form>
+        </div>
+        Count</th>
+    </tr>
+    <% while i < colElements do %>
+      <tr>
+        <%= "<td> #{creatorCount[i][0]} </td>
+              <td> #{creatorCount[i][1]} </td>" %>
+      </tr>
+      <% i += 1 %>
+    <% end %>
+  </table>
+  <table class="inlineTable">
+    <tr>
+      <th>Creator</th>
+      <th>Count</th>
+    </tr>
+    <%  while i < creatorCount.length do %>
+      <tr>
+        <%= "<td> #{creatorCount[i][0]} </td>
+              <td> #{creatorCount[i][1]} </td>" %>
+      </tr>
+      <% i += 1 %>
+    <% end %>
+  </table>
+</center>
+<% else %>
+<center>
+  <% if creatorCount.length % 3 == 0
+      colElements = creatorCount.length / 3
+    else
+      colElements = creatorCount.length / 3 + 1
+    end
+    i = 0 %>
+  <table class="inlineTable">
+    <tr>
+      <th>
+        <div class="button-container">
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="true" />
+            <input type='hidden' name="sortAsc" value="true" />
+            <input type="submit" value="/\">
+          </form>
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="true" />
+            <input type='hidden' name="sortAsc" value="false" />
+            <input type="submit" value="\/">
+          </form>
+        </div>
+        Creator
+      </th>
+      <th>
+        <div class="button-container">
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="false" />
+            <input type='hidden' name="sortAsc" value="true" />
+            <input type="submit" value="/\">
+          </form>
+          <form action="/sort" method="post">
+            <input type='hidden' name="sortByCreator" value="false" />
+            <input type='hidden' name="sortAsc" value="false" />
+            <input type="submit" value="\/">
+          </form>
+        </div>
+        Count
+      </th>
+    </tr>
+      <% while i < colElements do %>
+        <tr>
+        <%= "<td> #{creatorCount[i][0]} </td>
+              <td> #{creatorCount[i][1]} </td>" %>
+        </tr>
+        <% i += 1 %>
+      <% end %>
+  </table>
+  <table class="inlineTable">
+    <tr>
+      <th>Creator</th>
+      <th>Count</th>
+    </tr>
+      <%  while i < colElements * 2 do %>
+      <tr>
+      <%= "<td> #{creatorCount[i][0]} </td>
+            <td> #{creatorCount[i][1]} </td>" %>
+      </tr>
+      <% i += 1 %>
+      <% end %>
+  </table>
+  <table class="inlineTable">
+    <tr>
+      <th>Creator</th>
+      <th>Count</th>
+    </tr>
+      <%  while i < creatorCount.length do %>
+      <tr>
+      <%= "<td> #{creatorCount[i][0]} </td>
+            <td> #{creatorCount[i][1]} </td>" %>
+      </tr>
+      <% i += 1 %>
+      <% end %>
+  </table>
+</center>
+<% end %>
+<br><br>
+
+<hr>
+
+<br>
+<center>
+<em style="color: green; font-size: 2em;">
+    Monthly Breakdown: <br>
+</em>
+</center>
+<%  monthHash = Hash.new
+    months.each do |month, events|
+    eventCount = events.count
+    monthHash[month] = eventCount %>
+<% end %>
+<%= column_chart(monthHash) %>
