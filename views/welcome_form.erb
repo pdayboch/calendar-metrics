@@ -1,4 +1,3 @@
-<img src="meraki-logo.png" alt="Meraki" height="45"width="122">
 <h1> Cisco Meraki Mini Labs </h1>
 Time range:
 <form action ="/sort" method="post">
@@ -38,41 +37,12 @@ Time range:
 <%  if creatorCount.length < 5 %>
 <center>
   <table>
+    <%= erb :sortButtons %>
+    <%  creatorCount.each do |creator| %>
     <tr>
-      <th>
-        <div class="button-container">
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="true" />
-            <input type='hidden' name="sortAsc" value="true" />
-            <input type="submit" value="/\">
-          </form>
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="true" />
-            <input type='hidden' name="sortAsc" value="false" />
-            <input type="submit" value="\/">
-          </form>
-        </div>
-        Creator</th>
-      <th>
-        <div class="button-container">
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="false" />
-            <input type='hidden' name="sortAsc" value="true" />
-            <input type="submit" value="/\">
-          </form>
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="false" />
-            <input type='hidden' name="sortAsc" value="false" />
-            <input type="submit" value="\/">
-          </form>
-        </div>
-        Count</th>
-    </tr>
-      <%  creatorCount.each do |creator| %>
-      <tr>
       <%= "<td> #{creator[0]} </td>
             <td> #{creator[1]} </td>" %>
-      </tr>
+    </tr>
       <% end %>
   </table>
 </center>
@@ -85,36 +55,7 @@ Time range:
       end
     i = 0 %>
   <table class="inlineTable">
-    <tr>
-      <th>
-        <div class="button-container">
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="true" />
-            <input type='hidden' name="sortAsc" value="true" />
-            <input type="submit" value="/\">
-          </form>
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="true" />
-            <input type='hidden' name="sortAsc" value="false" />
-            <input type="submit" value="\/">
-          </form>
-        </div>
-        Creator</th>
-      <th>
-        <div class="button-container">
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="false" />
-            <input type='hidden' name="sortAsc" value="true" />
-            <input type="submit" value="/\">
-          </form>
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="false" />
-            <input type='hidden' name="sortAsc" value="false" />
-            <input type="submit" value="\/">
-          </form>
-        </div>
-        Count</th>
-    </tr>
+    <%= erb :sortButtons %>
     <% while i < colElements do %>
       <tr>
         <%= "<td> #{creatorCount[i][0]} </td>
@@ -137,7 +78,7 @@ Time range:
     <% end %>
   </table>
 </center>
-<% else %>
+<% else # creator count is greater than 11 %>
 <center>
   <% if creatorCount.length % 3 == 0
       colElements = creatorCount.length / 3
@@ -146,38 +87,7 @@ Time range:
     end
     i = 0 %>
   <table class="inlineTable">
-    <tr>
-      <th>
-        <div class="button-container">
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="true" />
-            <input type='hidden' name="sortAsc" value="true" />
-            <input type="submit" value="/\">
-          </form>
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="true" />
-            <input type='hidden' name="sortAsc" value="false" />
-            <input type="submit" value="\/">
-          </form>
-        </div>
-        Creator
-      </th>
-      <th>
-        <div class="button-container">
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="false" />
-            <input type='hidden' name="sortAsc" value="true" />
-            <input type="submit" value="/\">
-          </form>
-          <form action="/sort" method="post">
-            <input type='hidden' name="sortByCreator" value="false" />
-            <input type='hidden' name="sortAsc" value="false" />
-            <input type="submit" value="\/">
-          </form>
-        </div>
-        Count
-      </th>
-    </tr>
+    <%= erb :sortButtons %>
       <% while i < colElements do %>
         <tr>
         <%= "<td> #{creatorCount[i][0]} </td>

@@ -48,14 +48,14 @@ class Build
       @creatorEventCount.push([name, events.count])
     end
 
-    if sortByCreator== "true"
-      if asc=="true"
+    if sortByCreator == "true"
+      if asc == "true"
         @creatorEventCount.sort! { |a, b| a[0] <=> b[0] }
       else
         @creatorEventCount.sort! { |a, b| b[0] <=> a[0] }
       end
     else # sort by event count
-      if asc =="true"
+      if asc == "true"
         @creatorEventCount.sort! { |a, b| a[1] <=> b[1] }
       else
         @creatorEventCount.sort! { |a, b| b[1] <=> a[1] }
@@ -71,10 +71,12 @@ class Build
     monthsHash
   end
 
-  def initialize(calsWanted, dateMin, dateMax, sortByCreator = false, asc = false)
-    @calsWanted = calsWanted
-    @dateMin = dateMin
-    @dateMax = dateMax
+  def initialize(options = {})
+    @calsWanted = options[:calsWanted]
+    @dateMin = options[:startDate]
+    @dateMax = options[:endDate] || Time.new()
+    sortByCreator = options[:sortByCreator] || "false"
+    sortAsc = options[:sortAsc] || "false"
 
     # Setup the API and authenticate
     apiEngine = Engine.new
@@ -89,7 +91,7 @@ class Build
       end
     end
 
-    buildMetrics(@calendars, sortByCreator, asc)
+    buildMetrics(@calendars, sortByCreator, sortAsc)
   end
 
 end

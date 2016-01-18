@@ -14,9 +14,9 @@ set :views, "views"
 
 get '/' do
   session[:calsWanted] = ["Cisco Meraki Mini Lab 1","Cisco Meraki Mini Lab 2","Cisco Meraki Mini Lab 3"]
-  session[:startDate] = Time.new(2015, 1, 1) # default start
-  session[:endDate] = Time.new(2016, 1, 1) # default end
-  api = Build.new(session[:calsWanted], session[:startDate], session[:endDate])
+  session[:startDate] = Time.new(2015, 11, 10) # default start
+  session[:endDate] = Time.new(2016, 1, 13) # default end
+  api = Build.new(session)
   calendars = api.calendars
   creatorEvtCnt = api.creatorEventCount
   months = api.months
@@ -38,7 +38,7 @@ post '/sort' do
     endDate = Date._parse(params[:endDate])
     session[:endDate] = Time.new(endDate[:year], endDate[:mon], endDate[:mday])
   end
-  api = Build.new(session[:calsWanted], session[:startDate], session[:endDate], session[:sortByCreator], session[:sortAsc])
+  api = Build.new(session)
   calendars = api.calendars
   creatorEvtCnt = api.creatorEventCount
   months = api.months
